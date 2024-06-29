@@ -1,11 +1,11 @@
 function Set-Wallpaper {
 	param (
-			[Parameter(Mandatory = $true)]
-			[string]$path
+		[Parameter(Mandatory = $true)]
+		[string]$path
 	)
 
 	if (-not ([System.Management.Automation.PSTypeName]'Wallpaper').Type) {
-			Add-Type @"
+		Add-Type @"
 					using System;
 					using System.Runtime.InteropServices;
 					public class Wallpaper {
@@ -23,14 +23,14 @@ function Set-Wallpaper {
 
 function CreateSolidColorImage {
 	param (
-			[Parameter(Mandatory = $true)]
-			[string]$colorHex,
-			[Parameter(Mandatory = $true)]
-			[string]$filePath
+		[Parameter(Mandatory = $true)]
+		[string]$colorHex,
+		[Parameter(Mandatory = $true)]
+		[string]$filePath
 	)
 
 	Add-Type -AssemblyName System.Drawing
-	$bitmap = New-Object System.Drawing.Bitmap 1920,1080
+	$bitmap = New-Object System.Drawing.Bitmap 1920, 1080
 	$graphics = [System.Drawing.Graphics]::FromImage($bitmap)
 	$color = [System.Drawing.ColorTranslator]::FromHtml($colorHex)
 	$graphics.Clear($color)
@@ -39,8 +39,8 @@ function CreateSolidColorImage {
 
 function Set-VSCodeTheme {
 	param (
-			[Parameter(Mandatory = $true)]
-			[string]$themeName
+		[Parameter(Mandatory = $true)]
+		[string]$themeName
 	)
 
 	$settingsPath = "$env:APPDATA\Code\User\settings.json"
@@ -48,11 +48,11 @@ function Set-VSCodeTheme {
 	$settings = $settingsJson | ConvertFrom-Json
 
 	if ($settings -is [PSCustomObject]) {
-			$settingsHashTable = @{}
-			$settings.PSObject.Properties | ForEach-Object {
-					$settingsHashTable[$_.Name] = $_.Value
-			}
-			$settings = $settingsHashTable
+		$settingsHashTable = @{}
+		$settings.PSObject.Properties | ForEach-Object {
+			$settingsHashTable[$_.Name] = $_.Value
+		}
+		$settings = $settingsHashTable
 	}
 
 	$settings["workbench.colorTheme"] = $themeName
@@ -66,22 +66,17 @@ if ($appsUseLightTheme -eq 1 -and $systemUsesLightTheme -eq 1) {
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize" -Name "AppsUseLightTheme" -Value 0 -Type DWord
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize" -Name "SystemUsesLightTheme" -Value 0 -Type DWord
 
-	$blackImagePath = "$env:TEMP\black_background.png"
-	CreateSolidColorImage -colorHex "#000000" -filePath $blackImagePath
-
-	Set-Wallpaper -path $blackImagePath
+	# No cambiar el fondo de pantalla aquí
 
 	Set-VSCodeTheme -themeName "Monokai Dimmed"
 
 	Write-Output "Switched to Dark Theme"
-} else {
+}
+else {
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize" -Name "AppsUseLightTheme" -Value 1 -Type DWord
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize" -Name "SystemUsesLightTheme" -Value 1 -Type DWord
 
-	$colorImagePath = "$env:TEMP\color_background.png"
-	CreateSolidColorImage -colorHex "#515C6B" -filePath $colorImagePath
-
-	Set-Wallpaper -path $colorImagePath
+	# No cambiar el fondo de pantalla aquí
 
 	Set-VSCodeTheme -themeName "Default Light+"
 

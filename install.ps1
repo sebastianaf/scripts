@@ -1,7 +1,3 @@
-
-### `install.ps1`
-
-```powershell
 # Import module for color support
 Import-Module -Name Microsoft.PowerShell.Utility
 
